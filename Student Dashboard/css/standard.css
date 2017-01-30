@@ -1,0 +1,205 @@
+
+.header {
+  text-align: center;
+  padding: 10px 0 10px 0;
+}
+
+.header hr {
+  height: 6px;
+  border: none;
+  background: -webkit-linear-gradient(0deg,
+    rgb(51,105,232) 0%,
+    rgb(51,105,232) 25%,
+    rgb(222,30,37) 25%,
+    rgb(222,30,37) 50%,
+    rgb(255, 210, 0) 50%,
+    rgb(255, 210, 0) 75%,
+    rgb(76,187,71) 75%,
+    rgb(76,187,71) 100%
+    );
+
+ }
+
+.header .links * {
+  margin-left: 5px;
+}
+
+.header .links a {
+  color: #666;
+}
+
+.header:hover .links a {
+  color: #3399cc;
+}
+
+.flows h2 {
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+
+.flow {
+  margin: 0px;
+  padding: 0px;
+  background: rgb(255,255,255,0);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+}
+
+button.flow {
+  cursor: pointer;
+  background: -webkit-linear-gradient(top,#008dfd 0,#0370ea 100%);
+  border: 1px solid #076bd2;
+  text-shadow: 1px 1px 1px #076bd2;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+}
+
+a.greenTab{
+  background: #a0cf67 !important;
+}
+
+a.blueTab{
+  background: #0095d6 !important;
+}
+
+a.yellowTab{
+  background: #ffe14f !important;
+}
+
+a.redTab{
+  background: #ff1f40 !important;
+}
+
+div.greenTab{
+  background: #a0cf67 !important;
+}
+
+div.blueTab{
+  background: #0095d6 !important;
+}
+
+div.yellowTab{
+  background: #ffe14f !important;
+}
+
+div.redTab{
+  background: #ff1f40 !important;
+}
+
+div#fileButtonBar.greenTab{
+  background: rgba(160,207,103,1) !important;
+}
+
+div#fileButtonBar.blueTab{
+  background: rgba(0,149,214,1) !important;
+}
+
+div#fileButtonBar.yellowTab{
+  background: rgba(255,225,79,1) !important;
+}
+
+div#fileButtonBar.redTab{
+  background: rgba(255,31,64,1) !important;
+}
+
+
+a.flow  {
+
+  float:left; 
+  display:inline-block;
+  width: 20px;
+  background: #AE00D1;
+  overflow: hidden;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  text-decoration: none;
+  cursor: pointer;
+  text-shadow: 2px 2px 2px black;
+  color: white;
+  font-weight: 600;
+  font-size:15px;
+  border-radius:10px 10px 0px 0px !important;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 5px;
+  padding: 5px;
+  position: relative;
+}
+
+.flow button.error {
+  background: -webkit-linear-gradient(top,#008dfd 0,#0370ea 100%);
+  border: 1px solid #076bd2;
+  text-shadow: 1px 1px 1px #076bd2;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  margin: .5em 0 1em;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+}
+
+.flow button:disabled {
+  background: -webkit-linear-gradient(top, #dcdcdc 0, #fafafa 100%);
+  color: #999;
+  text-shadow: 1px 1px 1px #fafafa;
+  border: 1px solid #ddd;
+  cursor: auto;
+}
+
+
+button.flowOrange {
+  cursor: pointer;
+  background: -webkit-linear-gradient(top,#fbb450 0,#f89406 100%);
+  border: 1px solid #ad6704;
+  text-shadow: 1px 1px 1px #ad6704;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+  border-color: #f89406 #f89406 #ad6704;
+}
+
+button.flowOrange:active {
+  background: -webkit-linear-gradient(top,#f89406 0,#fbb450 100%);
+  color: black;
+}
+button.flowWhite {
+  cursor: pointer;
+    background: -webkit-linear-gradient(top,#FFF 0,#DDD 100%);
+  border: 1px solid #CCC;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+}
+
+button.flowWhite:active {
+  background: -webkit-linear-gradient(top,#DDD 0,#FFF 100%);
+  color: black;
+}
+
+button.flowGreen {
+  cursor: pointer;
+  background: -webkit-linear-gradient(top,#5cb85c 0,#47a447 100%);
+  border: 1px solid #4cae4c;
+  text-shadow: 1px 1px 1px #1c411c;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+}
+
+button.flowGreen:active {
+  background: -webkit-linear-gradient(top,#47a447 0,#5cb85c 100%);
+  color: black;
+}
+

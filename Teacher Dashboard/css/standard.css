@@ -1,0 +1,183 @@
+
+.header {
+  text-align: center;
+  padding: 10px 0 10px 0;
+}
+
+.header .links * {
+  margin-left: 5px;
+}
+
+.header .links a {
+  color: #666;
+}
+
+.header:hover .links a {
+  color: #3399cc;
+}
+
+.flows h2 {
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+
+.flow {
+  margin: 0px;
+  padding: 0px;
+  background: rgb(255,255,255,0);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+}
+
+button.flow {
+  cursor: pointer;
+  background: -webkit-linear-gradient(top,#008dfd 0,#0370ea 100%);
+  border: 1px solid #076bd2;
+  text-shadow: 1px 1px 1px #076bd2;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+}
+
+/* Body of the tab, where are the files get loaded */
+div.greenTab, div.blueTab, div.yellowTab, div.redTab{
+  /*background: -webkit-linear-gradient(top,#a0cf67 0,#96bd69 100%) !important;*/
+  background: #0296d4 !important;
+}
+
+/* The button bar, located at the top of each tab before the hr tag */
+div#fileButtonBar.greenTab, div#fileButtonBar.blueTab, div#fileButtonBar.yellowTab, div#fileButtonBar.redTab{
+  background : #0296d4 !important;
+}
+
+
+
+a.flow  {
+
+  float:left; 
+  display:inline-block;
+  width: 20px;
+  background: #2484ae;
+  overflow: hidden;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  text-decoration: none;
+  cursor: pointer;
+  text-shadow: 2px 2px 2px black;
+  color: white;
+  font-weight: 600;
+  font-size:15px;
+  border-radius:10px 10px 0px 0px !important;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 5px;
+  padding: 5px;
+  position: relative;
+}
+#addClass  {
+
+  float:left; 
+  display:inline-block;
+  width: 20px;
+  /*background: #AE00D1;*/
+  background: #D84A38;
+  overflow: hidden;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  text-decoration: none;
+  cursor: pointer;
+  text-shadow: 2px 2px 2px black;
+  color: white;
+  font-weight: 600;
+  font-size:15px;
+  border-radius:10px 10px 0px 0px !important;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 5px;
+  padding: 5px;
+  position: relative;
+}
+
+.flow button.error {
+  background: -webkit-linear-gradient(top,#008dfd 0,#0370ea 100%);
+  border: 1px solid #076bd2;
+  text-shadow: 1px 1px 1px #076bd2;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  margin: .5em 0 1em;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+}
+
+.flow button:disabled {
+  background: -webkit-linear-gradient(top, #dcdcdc 0, #fafafa 100%);
+  color: #999;
+  text-shadow: 1px 1px 1px #fafafa;
+  border: 1px solid #ddd;
+  cursor: auto;
+}
+
+button.flowOrange {
+  cursor: pointer;
+  background: -webkit-linear-gradient(top,#fbb450 0,#f89406 100%);
+  border: 1px solid #ad6704;
+  text-shadow: 1px 1px 1px #ad6704;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+  border-color: #f89406 #f89406 #ad6704;
+}
+
+button.flowOrange:active {
+  background: -webkit-linear-gradient(top,#f89406 0,#fbb450 100%);
+  color: black;
+}
+
+button.flowRed{
+  cursor: pointer;
+  background: -webkit-linear-gradient(top,#ee5f5b 0,#bd362f 100%);
+  border: 1px solid #bd362f;
+  text-shadow: 1px 1px 1px #802420;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+}
+
+button.flowRed:active {
+  background: -webkit-linear-gradient(top,#bd362f 0,#ee5f5b 100%);
+  color: black;
+}
+
+button.flowGreen {
+  cursor: pointer;
+  background: -webkit-linear-gradient(top,#5cb85c 0,#47a447 100%);
+  border: 1px solid #4cae4c;
+  text-shadow: 1px 1px 1px #1c411c;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 17px 8px 17px;
+  border-radius: 3px;
+}
+
+button.flowGreen:active {
+  background: -webkit-linear-gradient(top,#47a447 0,#5cb85c 100%);
+  color: black;
+}
+
+
+.tableHeader:active {
+  background: -webkit-linear-gradient(top,#bd362f 0, #ee5f5b 100%);
+  color: black;
+}

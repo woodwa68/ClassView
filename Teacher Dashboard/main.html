@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<!--
+Copyright 2012 Google Inc. sdjfhso;sfuhr
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0342
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Author: Eric Bidelman (ericbidelman@chromium.org)
+-->
+<html data-ng-app="gDriveApp" ng-csp="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Google ClassView - Teacher Dashboard</title>
+    
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="/css/standard.css">
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+ 
+    <base target="_blank">
+  </head>
+  <body data-ng-controller="DocsController">
+
+
+
+    <div id="topPane">
+      
+
+
+  
+      <div style="float:left; padding-left:80px; padding-top:40px; color:white;"><b>TEACHER</b></div>
+      <div id="userWelcome" style="float:left; padding-left:60px; padding-top:30px; font-size:18pt;">Welcome, <b>{{userInfo["name"]}}</b>!</div>
+      
+      <button id="authorize-button" class="flowGreen" data-ng-click="toggleAuth(true)" style="float:right; margin-top:15px; margin-right:60px">{{authButtonLabel()}}</button>
+
+      <button id="classViewSettings" style="float:right; margin-top:15px; margin-right:40px" class="flowRed" data-ng-click="classViewSettings()">ClassView Settings</button>
+    </div>
+
+
+      <!-- buffer space for the top pane -->
+      <div id="classTabsBuffer"> </div>
+
+    <div id="classFolderTabs" style="overflow:auto; padding-top:15px; width:100%;" >
+
+
+      <nav>
+        <a ng-cloak class="flow" id="{{class}}" data-ng-repeat="class in classButtons" data-ng-class="setClassColor($index)" data-ng-if="class.charAt(0) != '*'" ng-init="resizeTabs()" tabindex ="1" data-ng-click="setActiveClass(class, $index);">{{class}}</a>
+        <a class="flow" id="addClass" tabindex ="1" style="" >+</a>
+      </nav>
+
+      <br>
+      <div style="margin-top:19px; height:1px; width:100%; background-color: black; z-index:2; position:relative;"></div>
+    </div>
+
+
+    <!-- buffer space for the top pane -->
+    <div id="topPaneBuffer"> </div>
+
+
+    <div id="notLoggedInMessage" tabindex ="1" style="font-size:125%; width:900px; text-align: center;">
+      <h1>Welcome to the ClassView Teacher Dashboard!</h1>
+      </br>
+      With this tool you will be able to manage your students online files and assignment with ease.</br>
+      The Teacher Dashboard lets you easily create virtual class lists so you can send out files to multiple students with a click of a button.</br>
+      The Teacher Dashboard will also let you know when a student has turned in their assignment or if they need help.</br>
+      </br>
+      </br>
+      If you have never used the Teacher Dashboard before, just sign in and we will help you get started.
+    </div>
+  
+
+    <div id="classFolders" style="height:100%;" >
+
+    <div ng-cloak data-ng-class="setClassColor($index)" id="classFolder" data-ng-repeat="class in classButtons" data-ng-if="isActive(class)" style="height:100%; position:relative">
+      
+
+      <div id="buttonBarDiv" style="position:fixed; width:100%; -webkit-box-shadow: 0 8px 6px -6px black;">
+        <div style="padding:10px" class="flexRowsSB">
+          <span class="flexRowsLeft">
+            <!--<button id="sortBy" class="flow" data-ng-click="toggleSortBy(true)" style="position: absolute; margin-top:-47px;">{{sortByLabel()}}</button>-->
+            <button id="refreshFeed" data-ng-click="fetchClass()" class="flowRed"><div id="refresh"></div></button>
+            <button id="manageClass" style="margin-left:10px;" data-ng-click="addNewStudent()" class="flowRed">Add Student</button>
+            <button id="newFile" style="margin-left:10px;" data-ng-click="addNewFile()" class="flowRed">New File</button>
+          </span>
+          <span class="flexRowsLeft" style="width:18%">
+             <input style="height:30px; width:200px" type="search" data-ng-model="query" placeholder="  Search for files..." />
+          </span>
+
+          <span id="fileButtonBar" style="float:right; visibility: hidden;">
+            <button id="Resolve" data-ng-mousedown="markAsResolved()" class="flowOrange">Resolve</button>
+            <button id="openFile" style="margin-left:10px;" data-ng-mousedown="openFile($event)" class="flowOrange">Open</button>
+            <button id="shareFile" style="margin-left:10px;" data-ng-mousedown="shareFileDialogue()" class="flowOrange">Share</button>
+            <button id="deleteFile" style="margin-left:10px;" data-ng-mousedown="deleteFileDialogue()" class="flowOrange">Delete</button>
+            <button id="downloadFile" style="margin-left:10px;" data-ng-mousedown="downloadFile()" class="flowOrange">Download</button>
+          </span>
+        </div>
+      </div>
+
+      <div style="width:100%;height:60px"></div> <!--Placeholder -->
+      <div id="loading"></div>
+      <div id="studentFileContainer" style="padding: 0px 15px">
+        
+          <div class = "flexRows" id="studentFiles" data-ng-repeat= "student in students" data-ng-if="student.fullName.charAt(0) != '*'">
+          <div style="width:22%;"><h1 style="color: white; text-shadow: 2px 2px 2px black;">{{student.firstName}}<br>{{student.lastName}}</h1></div>
+          <div style="width:100%">
+            <div class="flexRows" >
+              <div class="tableHeader" style="border-radius: 4px 0px 0px 0px; width:40%;" data-ng-click="sortBy(student, 'title', $event)">File Name&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>&nbsp;
+              <div class="tableHeader" style="width:17.5%" data-ng-click="sortBy(student, 'completed', $event)">Completed&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>&nbsp;
+              <div class="tableHeader" style="width:17.5%;" data-ng-click="sortBy(student, 'help', $event)">Help Needed&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>&nbsp;
+              <div class="tableHeader" style="border-radius: 0px 4px 0px 0px; width:25%" data-ng-click="sortBy(student, 'updatedDateFull', $event)">Last Date Modified&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>
+            </div>
+            <ul>
+
+              <div class="flexRows file" style="width:inherit;" data-ng-repeat="doc in student.studentFiles | filter:{indexableText:query}" tabindex ="1">
+                  
+                  <div class="li flexRowsLeft" style="width:40%;">
+                    <img data-ng-src="{{doc.icon}}">&nbsp;<href a="{{doc.alternateLink}}" id="fileName" style="color:black; text-decoration:none" data-link="{{doc.alternateLink}}" data-help="{{doc.help}}" data-title="{{doc.title}}" data-id="{{doc.id}}" data-outmimetype="{{doc.outMimeType}}" data-downloadurl="{{doc.downloadurl}}"> {{doc.title}}</a>
+                  </div>&nbsp;
+                  <div class="li" style="width:17.5%">
+                    <img id="check" data-ng-if="doc.completed" src="img/check.png">
+                  </div>&nbsp;
+                  <div class="li" style="width:17.5%;">
+                    <img id="help" data-ng-if="doc.help" src="img/help.png">
+                  </div>&nbsp;
+                  <div class="li liRight" style="width:25%">
+                    <span class="date">{{doc.updatedDate}}</span>
+                  </div>
+               
+              </div>
+              
+              <div class="li" style="overflow: auto; display: block" data-ng-if="student.studentFiles.length == 0">Student currently has no files in this class.</div>
+          
+
+            </ul>
+          </div>
+        </div>
+            <br>
+            <br>
+        </div>
+
+      </div>
+    <!-- Hide this if the user is not logged in -->
+    <div id="noClassViewClasses" data-ng-if="classButtons.length == 0">
+        &nbsp;&nbsp;<img src="img/curved-arrow.png" width="100px" />
+        <span style="font-size: 150%">&nbsp;&nbsp;You have not created any classes yet!  Click here to create a class.</span>
+    </div>
+    <!-- - - - - - - - - - - - - - - - - - - - -->
+
+    </div>
+  </div>
+    
+
+
+    <div id="inline2">
+       <div class="flexColumns" id="newStudentContainer" style="width:400px;height:110px">
+        <div class="flexRows" style="width:100%; height:40%">
+          <form>
+            <div class="flexRowsSB" style="width:250px; height:25px">Class Name: 
+              <input class="nice-input" id="classNameInput" style="float:right; -webkit-justify-content: space-between"></input>
+            </div>
+          </form>
+        </div>
+        <div class="flexRows" style="height:20%">
+          <label id="classWarning">&nbsp;</label>
+        </div>
+        <div class="flexRows" style="height:40%">
+          <button class="flowRed" data-ng-click="addClass()">Add Class</button>
+        </div>
+      </div> 
+    </div> 
+
+
+    <!--New Assignment form-->
+    <div id="inline3">
+      <div class ="flexRows" id="transitionContainer">
+
+        <div class="flexColumns" style="width:400px;height:inherit">
+          
+            <div class="flexRows" style="height:50px"><button class="flowRed next exists">Upload an Existing File</button></div>
+            <div class="flexRows" style="height:50px"><button  class="flowRed next create">Create a New File</button></div>
+        </div>
+        <div class="flexColumns dropping" id="existsContainer" style="width:400px;height:inherit">
+          <div id="dropper">
+            <div class="dropzone"><!--<img src="img/upload.svg">--></div>
+          </div>
+          <div class="flexRows" style="height:20%; width:100%; "><button id="browse" class="flowRed">Browse</button>&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="testFile" class="nice-input" style="font-size:1.5em;"></input><input type="file" id="hiddenInput" /></div>
+          <div class="flexRows" style="height:60%"><h3>Drag 'N Drop</h3></div>
+          <div class="flexRows" style="height:20%">
+            <div class="flexRows" style="width:50%; height:auto"><button class="flowRed back">Back</button></div>
+            <div class="flexRows" style="width:50%; height:auto"><button class="flowRed next">Next</button></div>
+          </div>
+
+  
+     
+        </div>
+
+        <div id="createContainer" style="width:400px;height:inherit; display:none">
+          <div class="flexColumns">
+            <form class="flexColumns">
+              <span class="flexRows" style="width:100%">Assignment Title:&nbsp;<input style="width:50%" class="nice-input" placeholder="'1984 Comparative Essay'" id="assignmentTitle"></input></span>
+              
+                <textarea id="assignmentContent" class="nice-input defaultFont" style="resize:none; min-width:350px; min-height:250px;" placeholder=" "></textarea>
+              
+
+              <div class="flexRows">
+                <div class="flexRows" style="width:50%; height:auto"><button class="flowRed back">Back</button></div>
+                <div class="flexRows" style="width:50%; height:auto"><button class="flowRed next">Next</button></div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="transition flexColumns" style="width:400px; height:inherit">
+          <div class="flexRows" style="height:25%">
+          <span  style="font-size:350%;">Share With:</span>
+          </div>
+          <div class="flexColumns" style="overflow:auto">
+            <form style="width:70%">
+              <input type="checkbox" class="allCheckbox">
+              <span  style="font-size:200%;"><b>&nbsp;All Students</b></span>
+              <hr>
+              <div class="flexRowsLeft" data-ng-repeat="(student, value) in students" width="100%" height="20px" data-ng-if="value.fullName.charAt(0) != '*'">
+                <input type="checkbox" title="{{student}}">
+                <span  style="font-size:200%;">&nbsp;{{value.fullName}}</span>
+              </div>
+            </form>
+          </div>
+          <div class="flexRows" style="height:20%">
+            <div class="flexRows" style="width:50%;height:auto"><button class="flowRed back">Back</button></div>
+            <div class="flexRows" style="width:50%;height:auto;"><button data-ng-click="newAssignment()" class="flowRed">Create</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--New Assignment Form End-->
+
+
+    <div id="inline4">
+      <div class="flexColumns" id="newStudentContainer" style="width:400px;height:160px">
+        <div class="flexRows" style="width:100%; height:50%">
+          <form>
+            <div class="flexRowsSB" style="width:250px; height:25px">First Name: 
+              <input class="nice-input" id="firstNameInput" style="float:right; -webkit-justify-content: space-between"></input>
+            </div>
+            <div class="flexRowsSB" style="width:250px; height:25px">Last Name: 
+              <input class="nice-input" id="lastNameInput" style="float:right; -webkit-justify-content: space-between"></input>
+            </div>
+            <div class="flexRowsSB" style="width:250px; height:25px">Email: 
+              <input class="nice-input" id="emailInput" style="float:right; -webkit-justify-content: space-between"></input>
+            </div>
+          </form>
+        </div>
+        <div class="flexRows" style="height:20%">
+          <label id="warning">&nbsp;</label>
+        </div>
+        <div class="flexRows" style="height:30%">
+          <button class="flowRed" data-ng-click="addStudent()">Add Student</button>
+        </div>
+      </div>
+    </div>
+
+
+     <div id="inline5"> 
+      <div class="flexRows" id="settingsContainer" style="width:800px">
+
+        <div class="flexColumns" style="width:400px;height:inherit">
+          
+            <div class="flexRows" style="height:50px;">
+              <button data-ng-click="archiveClass()" class="flowRed next archiveClassButton">Archive Class</button>
+            </div>
+            <div class="flexRows" style="height:50px">
+              <button data-ng-click="archiveStudent()" class="flowRed next archiveStudentButton">Archive Students</button>
+            </div>
+        </div>
+
+        <div class="flexColumns" style="width:400px" id="archiveClassContainer">
+          <form style="width:70%" id="archiveCheckboxes">
+            <input type="checkbox" class="allCheckbox">
+            <span  style="font-size:200%;"><b>&nbsp;All Classes</b></span>
+            <hr>
+            <div class="flexRowsLeft" data-ng-repeat="(class, value) in classIDs" width="100%" height="20px">
+              <input class="archiveClasses" type="checkbox" data-id="{{value}}" data-name="{{class}}">
+              <span  style="font-size:200%;">&nbsp;{{class}}</span>
+            </div>
+          </form>
+          <div class="flexRows" style="height:20%">
+            <div class="flexRows" style="width:50%;height:auto"><button class="flowRed back">Back</button></div>
+            <div class="flexRows" style="width:50%;height:auto;"><button data-ng-click="submitArchiveClass()" class="flowRed">Update</button></div>
+          </div>
+        </div>
+
+        <div class="flexColumns" style="width:400px; display:none" id="archiveStudentContainer">
+          <form style="width:70%" id="archiveCheckboxes">
+            <input type="checkbox" class="allCheckbox">
+            <span  style="font-size:200%;"><b>&nbsp;All Students</b></span>
+            <hr>
+            <div class="flexRowsLeft" data-ng-repeat="(student, value) in students" width="100%" height="20px">
+                <input class="archiveStudents" type="checkbox" data-name="{{value.fullName}}" data-id="{{student}}">
+                <span  style="font-size:200%;">&nbsp;{{value.fullName}}</span>
+              </div>
+          </form>
+          <div class="flexRows" style="height:20%">
+            <div class="flexRows" style="width:50%;height:auto"><button class="flowRed back">Back</button></div>
+            <div class="flexRows" style="width:50%;height:auto;"><button data-ng-click="submitArchiveStudent()" class="flowRed">Update</button></div>
+          </div>
+        </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <div id="deleteFileContainer" style="height:125px; width:360px; display:none"> 
+      <div class="flexColumns">
+        <div class="flexRows"><h3>Are you sure you want to delete this file?</h3></div>
+        <div class="flexRows">
+          <div class="flexRows" style="height:50px"><button class="flowRed" data-ng-click="closeFancyBox()">Nevermind</button></div>
+          <div class="flexRows" style="height:50px"><button class="flowRed" data-ng-click="deleteFile()">I'm sure. Delete it!</button></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="shareFileContainer" style="height:500px; width:400px; display:none; overflow:hidden"> 
+      <div class="flexColumns">
+          <div class="flexRows" style="height:25%">
+          <span  style="font-size:350%;">Share With:</span>
+          </div>
+          
+          <div class="flexColumns" style="overflow:auto">
+            <form style="width:70%">
+              <input type="checkbox" class="allCheckbox">
+              <span  style="font-size:200%;"><b>&nbsp;All Students</b></span>
+              <hr>
+              <div class="flexRowsLeft" data-ng-repeat="(student, value) in students" width="100%" height="20px" data-ng-if="value.fullName.charAt(0) != '*'">
+                <input type="checkbox" title="{{student}}">
+                <span  style="font-size:200%;">&nbsp;{{value.fullName}}</span>
+              </div>
+            </form>
+          </div>
+          <div class="flexRows" style="height:25%">
+            <div class="flexRows" style="width:50%;height:auto"><button class="flowRed back">Back</button></div>
+            <div class="flexRows" style="width:50%;height:auto"><button data-ng-click="shareFile()" class="flowRed">Share</button></div>
+          </div>
+          
+        </div>
+    </div>
+
+  
+    <script src="js/util.js"></script>
+    <script src="js/dnd.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/gdocs.js"></script>
+    <script src="js/FileSaver.js"></script>
+    <script src="js/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

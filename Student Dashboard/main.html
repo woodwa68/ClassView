@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!--
+Copyright 2012 Google Inc. sdjfhso;sfuhr
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0342
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Author: Eric Bidelman (ericbidelman@chromium.org)
+-->
+<html data-ng-app="gDriveApp" ng-csp="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Google ClassView - Teacher Dashboard</title>
+    
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="/css/standard.css">
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+ 
+    <base target="_blank">
+  </head>
+  <body data-ng-controller="DocsController">
+
+
+
+    <div id="topPane">
+
+            <button id="refreshFeed" style="visibility:hidden;display:none;">Nothing</button>
+      <div style="float:left; padding-left:80px; padding-top:40px; color:white;"><b>STUDENT</b></div>
+      <div id="userWelcome" style="float:left; padding-left:60px; padding-top:30px; font-size:18pt;">Welcome, <b>{{userInfo["name"]}}</b>!</div>
+
+
+      <button id="authorize-button" class="flowGreen" data-ng-click="toggleAuth(true)" style="float:right; margin-top:15px; margin-right:60px">{{authButtonLabel()}}</button>
+
+    </div>
+
+
+      <!-- buffer space for the top pane -->
+      <div id="classTabsBuffer"> </div>
+
+    <div id="classFolderTabs" style="overflow:auto; padding-top:15px; width:100%;" >
+
+
+      <nav>
+        <a ng-cloak class="flow" id="{{class}}" data-ng-repeat="class in classButtons" data-ng-class="setClassColor($index)" ng-init="resizeTabs()" tabindex ="1" data-ng-click="setActiveClass(class, $index);">{{class}}</a>
+      </nav>
+      <br>
+      <div style="margin-top:19px; height:1px; width:100%; background-color:black; z-index:2; position:relative;"></div>
+    </div>
+
+
+    <!-- buffer space for the top pane -->
+    <div id="topPaneBuffer"> </div>
+
+
+     <div id="notLoggedInMessage" class="flow" tabindex ="1" style="font-size:150%;">
+      <h1>Welcome to the ClassView Student Dashboard!</h1>
+      <br>
+      With this tool you can do ALL your homework.<br>
+      <br>
+    </div>
+
+  
+
+    <div id="classFolders" style="height:100%;" >
+
+
+      <div id="buttonBarDiv" style="position:fixed; width:100%; -webkit-box-shadow: 0 8px 6px -6px black; z-index:50; background-color:#0296d4;">
+        <div style="padding:15px">
+          
+          <span>
+            <button id="refreshFeed" data-ng-click="fetchClass()" class="flowWhite"><div id="refresh"></div></button>
+          </span>
+
+          <span id="fileButtonBar" style="float:right; visibility: hidden">
+            <button id="openFile" data-ng-mousedown="openFile($event)" class="flowOrange">Open</button>
+            <button id="getHelp" style="margin-left:15px;" data-ng-mousedown="getHelp()" class="flowOrange">Ask For Help</button>
+            <button id="markComplete" style="margin-left:15px;" data-ng-mousedown="markAsComplete()" class="flowOrange">Mark as Complete</button>
+            <button id="downloadFile" style="margin-left:15px;" data-ng-mousedown="downloadFile()" class="flowOrange">Download</button>
+          </span>
+        </div>
+      </div>
+
+    <div ng-cloak data-ng-class="setClassColor($index)" id="classFolder" data-ng-repeat="class in classButtons" data-ng-if="isActive(class)" style="height:100%; position:relative">
+      
+      <div style="width:100%;height:60px"></div> <!--Placeholder -->
+      <div id="loading"></div>
+      <div id="studentFileContainer" style="overflow: auto; padding: 0px 15px">
+        
+          <div class = "flexRows" id="studentFiles" data-ng-repeat= "student in students">
+          <div style="width:100%">
+            <div class="flexRows" >
+              <div id="tableHeader" style="border-radius: 4px 0px 0px 0px; width:35%;" data-ng-click="sortBy(student, 'title', $event)">File Name&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>&nbsp;
+              <div id="tableHeader" style="width:15%" data-ng-click="sortBy(student, 'completed', $event)">Completed&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>&nbsp;
+              <div id="tableHeader" style="width:15%;" data-ng-click="sortBy(student, 'help', $event)">Help Needed&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>&nbsp;
+              <div id="tableHeader" style="width:15%;" data-ng-click="sortBy(student, 'feedback', $event)">Feedback&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>&nbsp;
+              <div id="tableHeader" style="border-radius: 0px 4px 0px 0px; width:20%" data-ng-click="sortBy(student, 'updatedDateFull', $event)">Last Date Modified&nbsp;<img class="downArrow" src="img/downArrow.png"><img class="upArrow" src="img/upArrow.png"></div>
+            </div>
+            <ul>
+              <div class="flexRows file" style="width:inherit;" data-ng-repeat="doc in student.studentFiles" tabindex ="1">
+                  <div class="li flexRowsLeft" style="width:35%;">
+                    <img data-ng-src="{{doc.icon}}">&nbsp;<a href="{{doc.alternateLink}}" id="fileName" style="color: #076bd2;" data-link="{{doc.alternateLink}}" data-help="{{doc.help}}" data-title="{{doc.title}}" data-id="{{doc.id}}" data-outmimetype="{{doc.outMimeType}}" data-downloadurl="{{doc.downloadurl}}"> {{doc.title}} </a>&nbsp; <img data-ng-if="doc.viewed == false" id="check" src="img/New-Content.gif">
+                  </div>&nbsp;
+                  <div class="li" style="width:15%">
+                    <img id="check" data-ng-if="doc.completed == true" src="img/check.png">
+                  </div>&nbsp;
+                  <div class="li" style="width:15%;">
+                    <img id="help" data-ng-if="doc.help == true" src="img/help.png">
+                  </div>&nbsp;
+                  <div class="li" style="width:15%;">
+                    <img id="feedback" data-ng-if="doc.feedback == true" src="img/feedback.png">
+                  </div>&nbsp;
+                  <div class="li liRight" style="width:20%">
+                    <span class="date">{{doc.updatedDate}}</span>
+                  </div>
+               
+              </div>
+
+
+              <div class="li" style="width:auto; display: block" data-ng-if="student.studentFiles.length == 0">Student currently has no files in this class.</div>
+
+
+            </ul>
+          </div>
+            <br>
+            <br>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+    <div id="getHelpContainer" style="width:400px;height:450px; display:none">
+      <div class="flexColumns">
+        <form class="flexColumns"> 
+          <div class="flexRows" style="height:25%">
+            <h1>Get Help!</h1>
+          </div>
+          <div class="flexRows" style="height:50%">       
+            <textarea id="helpContent" class="nice-input defaultFont" style="resize:none; min-width:300px; min-height:200px;" placeholder=" "></textarea>
+          </div>
+          <div class="flexRows" style="height:25%">
+            <div class="flexRows" style="width:50%; height:auto"><button data-ng-click="closeFancyBox()" class="flow">Cancel</button></div>
+            <div class="flexRows" style="width:50%; height:auto"><button data-ng-click="submitHelp()" class="flow">Submit</button></div>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+
+  
+    <script src="js/util.js"></script>
+    <script src="js/gdocs.js"></script>
+    <script src="js/FileSaver.js"></script>
+    <script src="js/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
